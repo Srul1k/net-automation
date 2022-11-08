@@ -1,18 +1,17 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
 using PageObjects.Extensions;
 using PageObjects.PageObjects;
-using SeleniumExtras.WaitHelpers;
 
 namespace PageObjects
 {
     public class Tests
     {
         private ChromeDriver _driver;
-        private string _nameOfFileToDownload = "EPAM_Systems_Company_Overview.pdf";
-        private string _downloadFolder = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Downloads";
+        private static string _nameOfFileToDownload = "EPAM_Systems_Company_Overview.pdf";
+        private static string _downloadFolder = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Downloads";
+        private static string _filePath = Path.Combine(_downloadFolder, _nameOfFileToDownload);
 
         [SetUp]
         public void StartBrowser()
@@ -33,6 +32,11 @@ namespace PageObjects
         public void CloseBrowser()
         {
             _driver.Quit();
+
+            if (File.Exists(_filePath))
+            {
+                File.Delete(_filePath);
+            }
         }
 
         [TestCase(".NET", "All Locations")]
@@ -45,12 +49,11 @@ namespace PageObjects
             careersPage.KeywordInput.SendKeys(language);
             careersPage.LocationUnwrapper.Click();
 
-            SelectLocation(location);
+            careersPage.SelectLocation(location);
 
             careersPage.RemoteOption.Click();
             careersPage.FindButton.Click();
-
-            ShowAllResults(careersPage.ViewMoreLink);
+            careersPage.ShowAllResults();
 
             _driver.MoveToElement(careersPage.LatestPositionViewAndApplyButton);
             careersPage.LatestPositionViewAndApplyButton.Click();
@@ -70,7 +73,7 @@ namespace PageObjects
             homePage.SearchInput.SendKeys(searchQuery);
             homePage.FindButton.Click();
 
-            ShowAllResults(searchPage.ViewMoreLink);
+            searchPage.ShowAllResults();
 
             Assert.IsTrue(searchPage.GetArticles().Any(a => a.Text.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)));
         }
@@ -83,16 +86,13 @@ namespace PageObjects
 
             homePage.AboutLink.Click();
             _driver.MoveToElement(aboutPage.DownloadLink);
+            aboutPage.DownloadLink.Click();
 
-            var uri = new Uri(aboutPage.DownloadLink.GetAttribute("href"));
-            var client = new HttpClient();
-            client.DownloadFile(uri, _downloadFolder).GetAwaiter().GetResult();
-
-            Assert.IsTrue(CheckFileDownloaded());
+            AssertIsFileDownloaded();
         }
 
-        [Test]
-        public void Validate_TitleOfArticle_MatchesWith_TitleInCarousel()
+        [TestCase(3)]
+        public void Validate_TitleOfArticle_MatchesWith_TitleInCarousel(int index)
         {
             var homePage = new HomePage(_driver);
             var insigthsPage = new InsightsPage(_driver);
@@ -100,70 +100,26 @@ namespace PageObjects
 
             homePage.InsightsLink.Click();
 
-            insigthsPage.GoToThirdElementInCarousel();
+            insigthsPage.GoToElementInCarousel(index);
             var nameOfArticle = insigthsPage.GetNameOfCarouselArticle();
             insigthsPage.LearnMoreLink.Click();
 
             Assert.True(carouselPage.NameOfArticle.Text.Contains(nameOfArticle, StringComparison.OrdinalIgnoreCase));
         }
 
-        private void ShowAllResults(IWebElement viewElement)
+        private void AssertIsFileDownloaded()
         {
-            long position = 0;
-            while (!viewElement.Displayed)
+            for (int i = 0; i < 10; i++)
             {
-                var newPosition = _driver.ScrollDown();
-                if (position == newPosition)
-                {
-                    break;
-                }
-
-                position = newPosition;
                 Thread.Sleep(2000);
-            }
 
-            while (viewElement.Displayed)
-            {
-                var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-                wait.Until(ExpectedConditions.ElementIsVisible
-                    (By.ClassName(viewElement.GetAttribute("class"))));
-
-                _driver.MoveToElement(viewElement);
-                viewElement.Click();
-
-                Thread.Sleep(3000);
-            }
-        }
-
-        private void SelectLocation(string location)
-        {
-            var careersPage = new CareersPage(_driver);
-
-            if (location.CompareTo("All Locations") != 0)
-            {
-                careersPage.GetParentLocationItem(location).Click();
-                careersPage.GetLocationItem(location).Click();
-            }
-            else
-            {
-                careersPage.AllLocationsItem.Click();
-            }
-        }
-
-        private bool CheckFileDownloaded()
-        {
-            string[] filePaths = Directory.GetFiles(_downloadFolder);
-
-            foreach (string path in filePaths)
-            {
-                if (path.Contains(_nameOfFileToDownload))
+                if (File.Exists(_filePath))
                 {
-                    File.Delete(path);
-                    return true;
+                    Assert.Pass();
                 }
             }
 
-            return false;
+            Assert.Fail();
         }
     }
 }

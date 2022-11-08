@@ -18,13 +18,13 @@ namespace PageObjects.PageObjects
             PageFactory.InitElements(_driver, this);
         }
 
-        public void GoToThirdElementInCarousel()
+        public void GoToElementInCarousel(int index)
         {
-            _driver.FindElement(By.CssSelector(".slider__navigation > .slider__dot:nth-child(3)")).Click();
+            _driver.FindElement(By.CssSelector($".slider__navigation > .slider__dot:nth-child({index})")).Click();
 
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             wait.Until(ExpectedConditions.ElementIsVisible(
-                By.CssSelector(".slider__navigation > .slider__dot:nth-child(3)[tabindex='0']")));
+                By.CssSelector($".slider__navigation > .slider__dot:nth-child({index})[tabindex='0']")));
         }
 
         public string GetNameOfCarouselArticle()

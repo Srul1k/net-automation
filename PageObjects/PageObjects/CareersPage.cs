@@ -1,9 +1,13 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using PageObjects.Extensions;
+using PageObjects.PageObjects.Interfaces;
 using SeleniumExtras.PageObjects;
+using SeleniumExtras.WaitHelpers;
 
 namespace PageObjects.PageObjects
 {
-    public class CareersPage
+    public class CareersPage : IResultsPage
     {
         private IWebDriver _driver;
 
@@ -42,6 +46,49 @@ namespace PageObjects.PageObjects
         public IWebElement GetParentLocationItem(string location)
         {
             return GetLocationItem(location).FindElement(By.XPath("../../child::strong"));
+        }
+
+        public void SelectLocation(string location)
+        {
+            var careersPage = new CareersPage(_driver);
+
+            if (location.CompareTo("All Locations") != 0)
+            {
+                careersPage.GetParentLocationItem(location).Click();
+                careersPage.GetLocationItem(location).Click();
+            }
+            else
+            {
+                careersPage.AllLocationsItem.Click();
+            }
+        }
+
+        public void ShowAllResults()
+        {
+            long position = 0;
+            while (!ViewMoreLink.Displayed)
+            {
+                var newPosition = _driver.ScrollDown();
+                if (position == newPosition)
+                {
+                    break;
+                }
+
+                position = newPosition;
+                Thread.Sleep(2000);
+            }
+
+            while (ViewMoreLink.Displayed)
+            {
+                var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+                wait.Until(ExpectedConditions.ElementIsVisible
+                    (By.ClassName(ViewMoreLink.GetAttribute("class"))));
+
+                _driver.MoveToElement(ViewMoreLink);
+                ViewMoreLink.Click();
+
+                Thread.Sleep(3000);
+            }
         }
     }
 }
