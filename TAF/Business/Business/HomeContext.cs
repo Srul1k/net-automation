@@ -12,19 +12,19 @@ namespace Business.Business
             DriverHolder.Driver.FindElement(page.AcceptCookiesButton).Click();
         }
 
-        public CareersContext ClickOnCareersLink()
+        public CareersContext OpenCareersPage()
         {
             DriverHolder.Driver.FindElement(page.CareersLink).Click();
             return new CareersContext();
         }
 
-        public AboutContext ClickOnAboutLink()
+        public AboutContext OpenAboutPage()
         {
             DriverHolder.Driver.FindElement(page.AboutLink).Click();
             return new AboutContext();
         }
 
-        public InsightsContext ClickOnInsightsLink()
+        public InsightsContext OpenInsightsPage()
         {
             DriverHolder.Driver.FindElement(page.InsightsLink).Click();
             return new InsightsContext();
