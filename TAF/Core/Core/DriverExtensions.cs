@@ -60,7 +60,7 @@ namespace Core.Core
                 driver.MoveToElement(viewMoreElement);
                 viewMoreElement.Click();
 
-                Thread.Sleep(3000);
+                Thread.Sleep(4000);
             }
         }
     }
