@@ -4,6 +4,7 @@ namespace Core.Core
 {
     public static class DriverHolder
     {
+        [ThreadStatic]
         private static IWebDriver _instance;
 
         public static IWebDriver Driver

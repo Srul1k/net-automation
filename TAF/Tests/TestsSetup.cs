@@ -4,6 +4,8 @@ using Core.Core;
 using NUnit.Framework;
 using Tests.Utils;
 
+[assembly: LevelOfParallelism(Data.LevelOfParallelism)]
+
 namespace Tests
 {
     public class TestsSetup
