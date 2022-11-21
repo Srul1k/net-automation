@@ -30,7 +30,7 @@ namespace Core.Core
 
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             js.ExecuteScript($"window.scrollTo({x},{y})");
-            js.ExecuteScript($"window.scrollBy(0, -200)");
+            js.ExecuteScript($"window.scrollBy(0, -210)");
         }
 
         public static void WaitUntilFileIsDownloaded(this IWebDriver driver, string filePath)

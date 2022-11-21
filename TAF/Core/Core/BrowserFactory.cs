@@ -17,10 +17,12 @@ namespace Core.Core
 
                 case (BrowserName.Chrome, false):
                     var chromeOptions = GetChromeOptions();
+                    chromeOptions.EnableHeadless();
                     return new ChromeDriver(chromeOptions);
 
                 case (BrowserName.Firefox, true):
                     var firefoxRemoteOptions = GetFirefoxOptions();
+                    firefoxRemoteOptions.EnableHeadless();
                     return new RemoteWebDriver(firefoxRemoteOptions);
 
                 default:
@@ -40,14 +42,19 @@ namespace Core.Core
         private static ChromeOptions GetChromeOptions()
         {
             var options = new ChromeOptions() { PageLoadStrategy = PageLoadStrategy.Normal };
-            options.AddArgument("no-sandbox");
+            options.AddArgument("--no-sandbox");
             return options;
         }
 
         private static void EnableHeadless(this ChromeOptions options)
         {
-            options.AddArguments("headless", "window-size=1920,1080");
+            options.AddArguments("--headless", "--window-size=1920,1080");
             options.AddUserProfilePreference("download.default_directory", Environment.GetEnvironmentVariable("USERPROFILE") + "\\Downloads");
+        }
+
+        private static void EnableHeadless(this FirefoxOptions options)
+        {
+            options.AddArguments("--headless", "--window-size=1920,1080");
         }
     }
 }

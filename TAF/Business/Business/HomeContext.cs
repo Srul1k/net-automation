@@ -1,5 +1,6 @@
 ﻿using Business.ApplicationInterfaces;
 using Core.Core;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 
@@ -14,7 +15,11 @@ namespace Business.Business
             new WebDriverWait(DriverHolder.Driver, TimeSpan.FromSeconds(10))
                 .Until(ExpectedConditions.ElementToBeClickable(page.AcceptCookiesButton));
 
-            DriverHolder.Driver.FindElement(page.AcceptCookiesButton).Click();
+            var element = DriverHolder.Driver.FindElement(page.AcceptCookiesButton);
+            Actions actions = new Actions(DriverHolder.Driver);
+            actions.MoveToElement(element);
+            actions.Perform();
+            element.Click();
         }
 
         public CareersContext OpenCareersPage()
