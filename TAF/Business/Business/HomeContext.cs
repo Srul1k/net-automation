@@ -1,5 +1,7 @@
 ﻿using Business.ApplicationInterfaces;
 using Core.Core;
+using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
 
 namespace Business.Business
 {
@@ -9,6 +11,9 @@ namespace Business.Business
 
         public void AcceptAllCookies()
         {
+            new WebDriverWait(DriverHolder.Driver, TimeSpan.FromSeconds(10))
+                .Until(ExpectedConditions.ElementToBeClickable(page.AcceptCookiesButton));
+
             DriverHolder.Driver.FindElement(page.AcceptCookiesButton).Click();
         }
 

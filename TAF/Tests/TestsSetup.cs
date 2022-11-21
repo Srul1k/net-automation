@@ -1,6 +1,7 @@
 ﻿using Business.Business;
 using Business.Data;
 using Core.Core;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Tests.Utils;
 
@@ -15,9 +16,17 @@ namespace Tests
         {
             try
             {
-                LoggerHolder.Logger.Info("Start Browser");
+                LoggerHolder.Logger.Info("Configure DriverSettings");
 
-                DriverHolder.InitDriver(BrowserName.Chrome);
+                IConfiguration config = new ConfigurationBuilder()
+                    .AddJsonFile("Tests.config.json")
+                    .AddEnvironmentVariables()
+                    .Build();
+
+                DriverSettings settings = config.GetRequiredSection(nameof(DriverSettings)).Get<DriverSettings>();
+
+                LoggerHolder.Logger.Info("Start Browser");
+                DriverHolder.InitDriver(settings);
                 LoggerHolder.Logger.Debug(DriverHolder.Driver.ToString());
 
                 LoggerHolder.Logger.Info("Open Home page");
