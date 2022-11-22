@@ -36,16 +36,16 @@ jobs:
       if: failure()
       with:
        name: screenshots
-       path: /home/runner/work/fun-with-actions/fun-with-actions/TAF/Tests/bin/Debug/net6.0/screenshots/
+       path: /home/runner/work/net-automation/net-automation/TAF/Tests/bin/Debug/net6.0/screenshots/
     - name: Upload API Tests results
       uses: actions/upload-artifact@v3
       if: always()
       with:
         name: api-tests-results
-        path: /home/runner/work/fun-with-actions/fun-with-actions/TAF/APITestsResults/
+        path: /home/runner/work/net-automation/net-automation/TAF/APITestsResults/
     - name: Upload Page Tests results
       uses: actions/upload-artifact@v3
       if: always()
       with:
         name: page-tests-results
-        path: /home/runner/work/fun-with-actions/fun-with-actions/TAF/PageTestsResults/
+        path: /home/runner/work/net-automation/net-automation/TAF/PageTestsResults/
