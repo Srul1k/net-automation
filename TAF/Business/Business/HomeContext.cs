@@ -15,11 +15,13 @@ namespace Business.Business
             new WebDriverWait(DriverHolder.Driver, TimeSpan.FromSeconds(10))
                 .Until(ExpectedConditions.ElementToBeClickable(page.AcceptCookiesButton));
 
-            var element = DriverHolder.Driver.FindElement(page.AcceptCookiesButton);
+            Thread.Sleep(2000);
+
+            var acceptCookiesButton = DriverHolder.Driver.FindElement(page.AcceptCookiesButton);
             Actions actions = new Actions(DriverHolder.Driver);
-            actions.MoveToElement(element);
+            actions.MoveToElement(acceptCookiesButton);
             actions.Perform();
-            element.Click();
+            acceptCookiesButton.Click();
         }
 
         public CareersContext OpenCareersPage()
