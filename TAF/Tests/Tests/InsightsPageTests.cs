@@ -4,6 +4,7 @@ using Tests.Utils;
 
 namespace Tests.Tests
 {
+    [Parallelizable(scope: ParallelScope.All)]
     public class InsightsPageTests : TestsSetup
     {
         [TestCase(3)]
@@ -16,7 +17,7 @@ namespace Tests.Tests
 
                 var home = new HomeContext();
 
-                LoggerHolder.Logger.Info("Open About page");
+                LoggerHolder.Logger.Info("Open Insights page");
                 var insights = home.OpenInsightsPage();
 
                 LoggerHolder.Logger.Info("Go to element in Carousel");

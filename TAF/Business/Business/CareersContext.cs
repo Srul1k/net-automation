@@ -40,7 +40,7 @@ namespace Business.Business
 
         public void SelectRemoteOption()
         {
-            new WebDriverWait(DriverHolder.Driver, TimeSpan.FromSeconds(5))
+            new WebDriverWait(DriverHolder.Driver, TimeSpan.FromSeconds(10))
                 .Until(ExpectedConditions.ElementToBeClickable(page.RemoteOption));
 
             DriverHolder.Driver.FindElement(page.RemoteOption).Click();

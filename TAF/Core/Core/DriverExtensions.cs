@@ -9,6 +9,7 @@ namespace Core.Core
     {
         public static void MoveToElement(this IWebDriver driver, IWebElement element)
         {
+            driver.ScrollToElement(element);
             Actions actions = new Actions(driver);
             actions.MoveToElement(element);
             actions.Perform();
@@ -20,6 +21,16 @@ namespace Core.Core
             js.ExecuteScript("window.scrollBy(0,document.body.scrollHeight)");
 
             return (long)js.ExecuteScript("return document.body.scrollHeight");
+        }
+
+        public static void ScrollToElement(this IWebDriver driver, IWebElement element)
+        {
+            var x = element.Location.X;
+            var y = element.Location.Y;
+
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            js.ExecuteScript($"window.scrollTo({x},{y})");
+            js.ExecuteScript($"window.scrollBy(0, -210)");
         }
 
         public static void WaitUntilFileIsDownloaded(this IWebDriver driver, string filePath)
@@ -60,7 +71,7 @@ namespace Core.Core
                 driver.MoveToElement(viewMoreElement);
                 viewMoreElement.Click();
 
-                Thread.Sleep(3000);
+                Thread.Sleep(4000);
             }
         }
     }

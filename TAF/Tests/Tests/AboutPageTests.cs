@@ -5,6 +5,7 @@ using Tests.Utils;
 
 namespace Tests.Tests
 {
+    [Parallelizable(scope: ParallelScope.All)]
     public class AboutPageTests : TestsSetup
     {
         [Test]
